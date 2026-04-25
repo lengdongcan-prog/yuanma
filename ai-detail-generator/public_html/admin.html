@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 电商详情页生成器 - 管理端</title>
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="loginPage" class="login-container">
+        <div class="login-form">
+            <h2>管理员登录</h2>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" class="form-input" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" class="form-input" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">登录</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 管理界面 -->
+    <div id="adminPanel" style="display: none; width: 100%;">
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">管理中心</div>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="sidebar-menu-item">
+                    <a href="#" class="sidebar-menu-link active" data-view="dashboard">数据看板</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="#" class="sidebar-menu-link" data-view="models">模型配置</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="#" class="sidebar-menu-link" data-view="users">用户管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="#" class="sidebar-menu-link" data-view="projects">项目管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="#" class="sidebar-menu-link" data-view="templates">模板管理</a>
+                </li>
+                <li class="sidebar-menu-item">
+                    <a href="#" class="sidebar-menu-link" data-view="settings">系统设置</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-content">
+            <!-- 顶部导航 -->
+            <div class="top-nav">
+                <div class="top-nav-title">AI 电商详情页生成器 - 管理中心</div>
+                <div class="top-nav-user">
+                    <button id="adminSettingsBtn" class="btn btn-secondary" style="margin-right: 10px;">管理员设置</button>
+                    <span>管理员</span>
+                    <button id="adminLogoutBtn">退出</button>
+                </div>
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 数据看板 -->
+                <div class="view" id="dashboardView">
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value">128</div>
+                            <div class="dashboard-card-label">总用户数</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value">3,245</div>
+                            <div class="dashboard-card-label">生成总量</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value">12.5GB</div>
+                            <div class="dashboard-card-label">存储占用</div>
+                        </div>
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-value">89%</div>
+                            <div class="dashboard-card-label">系统负载</div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h2 class="panel-title">生成趋势</h2>
+                        <div style="height: 300px; background: #0f1419; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                            <p style="color: #a8b2d1;">趋势图表将在此显示</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模型配置 -->
+                <div class="view" id="modelsView" style="display: none;">
+                    <div class="panel">
+                        <h2 class="panel-title">模型配置管理</h2>
+                        <div class="model-tabs">
+                            <div class="model-tab active" data-tab="image-understanding">图片理解</div>
+                            <div class="model-tab" data-tab="text-generation">文案生成</div>
+                            <div class="model-tab" data-tab="image-generation">图片生成</div>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                            <button class="btn btn-primary" id="addModelBtn">添加模型</button>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>模型名称</th>
+                                    <th>LiteLLM标识符</th>
+                                    <th>状态</th>
+                                    <th>默认</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>GPT-4 Vision</td>
+                                    <td>gpt-4-vision-preview</td>
+                                    <td>启用</td>
+                                    <td>✓</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;" data-model-id="1">编辑</button>
+                                        <button class="btn btn-danger" data-model-id="1">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Claude 3 Opus</td>
+                                    <td>claude-3-opus-20240229</td>
+                                    <td>启用</td>
+                                    <td></td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;" data-model-id="2">编辑</button>
+                                        <button class="btn btn-danger" data-model-id="2">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 用户管理 -->
+                <div class="view" id="usersView" style="display: none;">
+                    <div class="panel">
+                        <h2 class="panel-title">用户管理</h2>
+                        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                            <input type="text" class="form-input" placeholder="搜索用户..." style="width: 300px; margin-right: 10px;">
+                            <button class="btn btn-primary">搜索</button>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>用户名</th>
+                                    <th>邮箱</th>
+                                    <th>注册时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>user1</td>
+                                    <td>user1@example.com</td>
+                                    <td>2026-04-20</td>
+                                    <td>启用</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">禁用</button>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">设为管理员</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>user2</td>
+                                    <td>user2@example.com</td>
+                                    <td>2026-04-19</td>
+                                    <td>启用</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">禁用</button>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">设为管理员</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 项目管理 -->
+                <div class="view" id="projectsView" style="display: none;">
+                    <div class="panel">
+                        <h2 class="panel-title">项目管理</h2>
+                        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                            <input type="text" class="form-input" placeholder="搜索项目..." style="width: 300px; margin-right: 10px;">
+                            <button class="btn btn-primary">搜索</button>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>项目名称</th>
+                                    <th>用户</th>
+                                    <th>创建时间</th>
+                                    <th>生成数量</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>夏季T恤</td>
+                                    <td>user1</td>
+                                    <td>2026-04-20</td>
+                                    <td>5</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">查看</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>运动鞋</td>
+                                    <td>user2</td>
+                                    <td>2026-04-19</td>
+                                    <td>8</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">查看</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 模板管理 -->
+                <div class="view" id="templatesView" style="display: none;">
+                    <div class="panel">
+                        <h2 class="panel-title">模板管理</h2>
+                        <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                            <button class="btn btn-primary" id="uploadTemplateBtn">上传模板</button>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>模板名称</th>
+                                    <th>平台</th>
+                                    <th>尺寸</th>
+                                    <th>默认</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>淘宝详情页模板</td>
+                                    <td>淘宝</td>
+                                    <td>3:4</td>
+                                    <td>✓</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">预览</button>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">设为默认</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>亚马逊A+模板</td>
+                                    <td>亚马逊</td>
+                                    <td>亚马逊高级A+</td>
+                                    <td></td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">预览</button>
+                                        <button class="btn btn-secondary" style="margin-right: 5px;">设为默认</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 系统设置 -->
+                <div class="view" id="settingsView" style="display: none;">
+                    <div class="panel">
+                        <h2 class="panel-title">系统设置</h2>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                            <div>
+                                <h3 style="margin-bottom: 20px; color: #a8b2d1;">存储配置</h3>
+                                <div class="form-group">
+                                    <label class="form-label">存储路径</label>
+                                    <input type="text" class="form-input" value="public_html/uploads/">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">最大存储容量</label>
+                                    <input type="text" class="form-input" value="100GB">
+                                </div>
+                            </div>
+                            <div>
+                                <h3 style="margin-bottom: 20px; color: #a8b2d1;">水印设置</h3>
+                                <div class="form-group">
+                                    <label class="form-label">水印文本</label>
+                                    <input type="text" class="form-input" value="AI Generated">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">水印位置</label>
+                                    <select class="form-input">
+                                        <option>右下角</option>
+                                        <option>左下角</option>
+                                        <option>右上角</option>
+                                        <option>左上角</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 30px;">
+                            <h3 style="margin-bottom: 20px; color: #a8b2d1;">生成限制</h3>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                <div class="form-group">
+                                    <label class="form-label">每用户每日生成上限</label>
+                                    <input type="number" class="form-input" value="100">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">每批最大生成数量</label>
+                                    <input type="number" class="form-input" value="20">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">图片最大尺寸</label>
+                                    <input type="text" class="form-input" value="4096x4096">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 30px; text-align: right;">
+                            <button class="btn btn-primary" onclick="saveSystemSettings()">保存设置</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加模型模态框 -->
+    <div class="modal" id="addModelModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">添加模型配置</h2>
+                <button class="close-btn" id="closeAddModelBtn">&times;</button>
+            </div>
+            <form id="addModelForm">
+                <div class="form-group">
+                    <label class="form-label">模型名称</label>
+                    <input type="text" class="form-input" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">LiteLLM模型标识符</label>
+                    <input type="text" class="form-input" name="model_id" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">API Key</label>
+                    <input type="password" class="form-input" name="api_key">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">API Base URL</label>
+                    <input type="text" class="form-input" name="api_base">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">状态</label>
+                    <select class="form-input" name="status">
+                        <option value="enabled">启用</option>
+                        <option value="disabled">禁用</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 10px;">
+                        <input type="checkbox" name="is_default">
+                        <span>设为默认</span>
+                    </label>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">保存</button>
+                    <button type="button" class="btn btn-secondary" id="testModelBtn">测试连接</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 管理员设置模态框 -->
+    <div class="modal" id="adminSettingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">管理员设置</h2>
+                <button class="close-btn" id="closeAdminSettingsBtn">&times;</button>
+            </div>
+            <form id="adminSettingsForm">
+                <div class="form-group">
+                    <label class="form-label">管理员用户名</label>
+                    <input type="text" class="form-input" id="admin-username" value="admin">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">管理员邮箱</label>
+                    <input type="email" class="form-input" id="admin-email" value="admin@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">当前密码</label>
+                    <input type="password" class="form-input" id="current-password" placeholder="请输入当前密码">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">新密码</label>
+                    <input type="password" class="form-input" id="new-password" placeholder="请输入新密码">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">确认新密码</label>
+                    <input type="password" class="form-input" id="confirm-password" placeholder="请确认新密码">
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">保存</button>
+                    <button type="button" class="btn btn-secondary" id="cancelAdminSettingsBtn">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/admin.js?v=1.0.1"></script>
+</body>
+</html>

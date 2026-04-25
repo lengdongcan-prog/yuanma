@@ -1,0 +1,375 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f1419;
+    color: #e6f1ff;
+    min-height: 100vh;
+    display: flex;
+}
+
+/* 侧边栏 */
+.sidebar {
+    width: 250px;
+    background: #1a232e;
+    border-right: 1px solid #334155;
+    padding: 20px 0;
+}
+
+.sidebar-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid #334155;
+    margin-bottom: 20px;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #409EFF;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-menu-item {
+    margin-bottom: 5px;
+}
+
+.sidebar-menu-link {
+    display: block;
+    padding: 12px 20px;
+    color: #a8b2d1;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-menu-link:hover {
+    color: #409EFF;
+    background: rgba(64, 158, 255, 0.1);
+    border-left-color: #409EFF;
+}
+
+.sidebar-menu-link.active {
+    color: #409EFF;
+    background: rgba(64, 158, 255, 0.1);
+    border-left-color: #409EFF;
+}
+
+/* 主内容区 */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 顶部导航 */
+.top-nav {
+    background: #1a232e;
+    border-bottom: 1px solid #334155;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-nav-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.top-nav-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.top-nav-user span {
+    color: #a8b2d1;
+}
+
+.top-nav-user button {
+    background: none;
+    border: 1px solid #334155;
+    color: #a8b2d1;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.top-nav-user button:hover {
+    color: #409EFF;
+    border-color: #409EFF;
+}
+
+/* 内容区域 */
+.content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* 面板 */
+.panel {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.panel-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #409EFF;
+}
+
+/* 按钮 */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: #409EFF;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background: #66b1ff;
+}
+
+.btn-secondary {
+    background: #334155;
+    color: #e6f1ff;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+.btn-danger {
+    background: #f56c6c;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #f78989;
+}
+
+/* 表单 */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    color: #a8b2d1;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px;
+    background: #0f1419;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    color: #e6f1ff;
+    font-size: 14px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #409EFF;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+}
+
+/* 数据看板 */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.dashboard-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.dashboard-card-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #409EFF;
+    margin-bottom: 10px;
+}
+
+.dashboard-card-label {
+    color: #a8b2d1;
+    font-size: 14px;
+}
+
+/* 表格 */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th,
+.table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+.table th {
+    background: #1a232e;
+    color: #409EFF;
+    font-weight: 600;
+}
+
+.table tr:hover {
+    background: rgba(64, 158, 255, 0.05);
+}
+
+/* 模型配置 */
+.model-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.model-tab {
+    padding: 8px 16px;
+    border: 1px solid #334155;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.model-tab:hover {
+    border-color: #409EFF;
+}
+
+.model-tab.active {
+    background: #409EFF;
+    color: #fff;
+    border-color: #409EFF;
+}
+
+/* 模态框 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    display: none;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 30px;
+    width: 500px;
+    max-width: 90%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #409EFF;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #a8b2d1;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #e6f1ff;
+}
+
+/* 登录页面 */
+.login-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 40px;
+    width: 400px;
+    max-width: 90%;
+}
+
+.login-form h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #409EFF;
+}
+
+.login-form button {
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .table {
+        font-size: 14px;
+    }
+
+    .table th,
+    .table td {
+        padding: 8px;
+    }
+}

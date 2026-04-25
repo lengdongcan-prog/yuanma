@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI详情页生成器</title>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <link rel="stylesheet" href="assets/css/user.css">
+    <script src="assets/js/user.js?v=1.0.1"></script>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 左侧参数配置 -->
+        <div class="params-panel">
+            <h2 style="display: flex; justify-content: space-between; align-items: center;"><span class="icon icon-settings"></span>AI电商Listing图片生成器</h2>
+            
+            <!-- 产品信息 -->
+            <div class="param-group">
+                <h3 style="font-size: 14px; color: #64ffda; margin-bottom: 10px;">产品信息</h3>
+                <div class="param-group">
+                    <label for="product-name">产品名称</label>
+                    <input type="text" id="product-name" placeholder="输入产品名称">
+                </div>
+                <div class="param-group">
+                    <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #a8b2d1;">上传图（可上多图）</label>
+                    <div style="display: flex; gap: 15px;">
+                        <!-- 产品图片上传 -->
+                        <div style="flex: 1;">
+                            <div style="width: 100%; padding-top: 100%; position: relative;">
+                                <label for="product-images" style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px dashed #64ffda; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; transition: all 0.3s ease; background: rgba(17, 25, 40, 0.8); cursor: pointer;">
+                                    <input type="file" id="product-images" multiple accept="image/*" onchange="handleImageUpload(event)" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                                    <div style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                            <path d="M19 16.9A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 9 16.25" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M13 11v5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M15 13l-2-2-2 2" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <p style="margin: 0; color: #e6f1ff; font-size: 14px; font-weight: 500;">产品图片</p>
+                                    <p style="margin: 0; color: #64ffda; font-size: 12px;">支持JPG、PNG、Web格式</p>
+                                </label>
+                            </div>
+                            <div id="image-previews" style="margin-top: 10px; display: flex; flex-direction: column; gap: 10px;"></div>
+                        </div>
+                        <!-- 穿戴图上传 -->
+                        <div style="flex: 1;">
+                            <div style="width: 100%; padding-top: 100%; position: relative;">
+                                <label for="wear-images" style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px dashed #64ffda; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; transition: all 0.3s ease; background: rgba(17, 25, 40, 0.8); cursor: pointer;">
+                                    <input type="file" id="wear-images" multiple accept="image/*" onchange="handleWearImageUpload(event)" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                                    <div style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                            <path d="M19 16.9A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 9 16.25" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M13 11v5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M15 13l-2-2-2 2" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    </div>
+                                    <p style="margin: 0; color: #e6f1ff; font-size: 14px; font-weight: 500;">穿戴图（可不上传）</p>
+                                    <p style="margin: 0; color: #64ffda; font-size: 12px;">支持JPG、PNG、Web格式</p>
+                                </label>
+                            </div>
+                            <div id="wear-image-previews" style="margin-top: 10px; display: flex; flex-direction: column; gap: 10px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 核心卖点 -->
+                <div class="param-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <label style="font-size: 14px; color: #a8b2d1;">核心卖点(最多10条)</label>
+                        <button onclick="addSellingPoint()" style="padding: 6px 12px; background: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 6px; color: #64ffda; font-size: 12px; cursor: pointer; transition: all 0.3s ease;">
+                            添加卖点
+                        </button>
+                    </div>
+                    <div id="selling-points-container" style="display: flex; flex-direction: column; gap: 8px;">
+                        <!-- 卖点将通过JavaScript动态添加 -->
+                    </div>
+                </div>
+                
+                <div class="param-group">
+                    <label for="product-description">产品描述</label>
+                    <textarea id="product-description" placeholder="输入产品详细描述"></textarea>
+                </div>
+                </div>
+
+            <!-- 策略配置 -->
+            <div class="param-group">
+                <h3 style="font-size: 14px; color: #64ffda; margin-bottom: 10px;">策略配置</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label for="platform" style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">平台</label>
+                        <select id="platform" style="width: 100%; padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                            <option value="taobao">淘宝天猫1688</option>
+                            <option value="temu">TEMU</option>
+                            <option value="tiktok">TikTok Shop</option>
+                            <option value="amazon">亚马逊</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="country" style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">国家</label>
+                        <select id="country" onchange="const country=this.value; const langMap={china:'chinese',usa:'english',uk:'english',korea:'korean',japan:'japanese',spain:'spanish',italy:'italian'}; if(langMap[country]){document.getElementById('language').value=langMap[country];}" style="width: 100%; padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                            <option value="china">中国</option>
+                            <option value="usa">美国</option>
+                            <option value="uk">英国</option>
+                            <option value="korea">韩国</option>
+                            <option value="japan">日本</option>
+                            <option value="spain">西班牙</option>
+                            <option value="italy">意大利</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="language" style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">语言</label>
+                        <select id="language" style="width: 100%; padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                            <option value="chinese">中文</option>
+                            <option value="english">英文</option>
+                            <option value="korean">韩语</option>
+                            <option value="japanese">日语</option>
+                            <option value="spanish">西班牙语</option>
+                            <option value="italian">意大利语</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">尺寸</label>
+                    <div class="custom-dropdown" style="position: relative; width: 100%;">
+                        <div class="dropdown-toggle" style="padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+                            <span id="selected-size-text">高级A+</span>
+                            <span style="font-size: 12px;">▼</span>
+                        </div>
+                        <div class="dropdown-menu" style="position: absolute; top: 100%; left: 0; right: 0; background: rgba(17, 25, 40, 0.95); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0 0 6px 6px; z-index: 1000; max-height: 300px; overflow-y: auto; display: none;">
+                            <!-- 亚马逊专用尺寸选项 -->
+                            <div id="amazon-size-options" style="display: none; padding: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                    <input type="radio" name="size-group" value="advanced-a-plus-both" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                    高级A+（电脑端+移动端）
+                                </label>
+                                <p style="margin-left: 22px; margin-top: 5px; font-size: 12px; color: #64ffda;">将同时生成电脑端和移动端两套图片</p>
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                    <input type="radio" name="size-group" value="1464x600" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                    高级A+ 电脑端（1464×600）
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                    <input type="radio" name="size-group" value="600x450" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                    高级A+ 移动端（600×450）
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                    <input type="radio" name="size-group" value="970x600" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                    普通A+（970×600）
+                                </label>
+                            </div>
+                            
+                            <!-- 通用尺寸选项 -->
+                            <div id="general-size-options" style="padding: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                        <input type="radio" name="size-group" value="1:1" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                        1:1
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                        <input type="radio" name="size-group" value="3:4" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                        3:4
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                        <input type="radio" name="size-group" value="9:16" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                        9:16
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                        <input type="radio" name="size-group" value="16:9" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                        16:9
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- 自定义尺寸选项 -->
+                            <div style="padding: 10px;">
+                                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #e6f1ff; cursor: pointer; padding: 5px 0;">
+                                    <input type="radio" name="size-group" value="custom" style="accent-color: #64ffda; width: 14px; height: 14px;">
+                                    自定义宽高(单位px)
+                                </label>
+                            </div>
+                        </div>
+                        <input type="hidden" id="size" value="advanced-a-plus">
+                    </div>
+                </div>
+
+                <div id="custom-size-container" style="margin-bottom: 15px; display: none;">
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label for="custom-width" style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">宽度 (px)</label>
+                            <input type="number" id="custom-width" min="1" value="800" style="width: 100%; padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="custom-height" style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">高度 (px)</label>
+                            <input type="number" id="custom-height" min="1" value="800" style="width: 100%; padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                        </div>
+                    </div>
+                </div>
+                <!-- 数量模块 -->
+                <div class="param-group" style="margin-bottom: 15px;">
+                    <label for="quantity" style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">数量</label>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <input type="number" id="quantity" min="1" max="20" value="5" style="flex: 1; padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                    </div>
+                    <p style="margin-top: 5px; font-size: 12px; color: #a8b2d1;">设置生成详情页的数量，点击查看提示词后可修改每张图的提示词</p>
+                </div>
+                
+                <!-- 详情页模块 -->
+                <div class="param-group" style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <label style="display: block; font-size: 14px; color: #a8b2d1;">详情页模块</label>
+                        <button id="add-module-btn" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px; background: linear-gradient(90deg, #64ffda, #4fd1c5); border: none; border-radius: 6px; color: #0a192f; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                            <i class="fas fa-plus"></i> 添加详情页模块
+                        </button>
+                    </div>
+                    <div id="modules-container" style="margin-top: 10px; position: relative;">
+                        <!-- 模块会动态添加到这里 -->
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 竞品分析 -->
+            <div class="param-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="font-size: 14px; color: #64ffda; margin: 0;">竞品分析参考</h3>
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #a8b2d1; cursor: pointer;">
+                        <input type="checkbox" id="analysis-toggle" onchange="toggleAnalysisOptions()" style="accent-color: #64ffda; width: 16px; height: 16px;">
+                        <span>启用</span>
+                    </label>
+                </div>
+                <div class="param-group" id="analysis-options" style="display: none;">
+                    <!-- 手动分析选项 -->
+                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; padding: 15px; background: rgba(26, 32, 44, 0.8); border-radius: 8px; border: 1px solid rgba(100, 255, 218, 0.2);">
+                        <div style="margin-top: 2px;">
+                            <input type="radio" id="manual-analysis" name="analysis-type" value="manual" checked style="accent-color: #64ffda;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="manual-analysis" style="display: block; margin-bottom: 10px; font-size: 14px; color: #e6f1ff; font-weight: 500;">手动上传竞品链接</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="url" id="competitor-url" placeholder="输入竞品链接" style="flex: 1;">
+                                <button onclick="analyzeCompetitor()" style="padding: 10px 15px; background: linear-gradient(90deg, #64ffda, #4fd1c5); border: none; border-radius: 6px; color: #0a192f; font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.3s ease;">
+                                    分析竞品
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动分析选项 -->
+                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; padding: 15px; background: rgba(26, 32, 44, 0.8); border-radius: 8px; border: 1px solid rgba(100, 255, 218, 0.2);">
+                        <div style="margin-top: 2px;">
+                            <input type="radio" id="auto-analysis" name="analysis-type" value="auto" style="accent-color: #64ffda;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="auto-analysis" style="display: block; margin-bottom: 10px; font-size: 14px; color: #e6f1ff; font-weight: 500;">自动分析</label>
+                            <button onclick="autoAnalyzeCompetitor()" style="width: 100%; padding: 12px; background: linear-gradient(90deg, #64ffda, #4fd1c5); border: none; border-radius: 6px; color: #0a192f; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s ease;">
+                                点击自动分析竞品
+                            </button>
+                            <p style="margin-top: 8px; font-size: 12px; color: #a8b2d1;">AI将根据上传的产品信息自动分析对应平台的竞品</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 竞品图片上传 -->
+                    <div style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 15px; padding: 15px; background: rgba(26, 32, 44, 0.8); border-radius: 8px; border: 1px solid rgba(100, 255, 218, 0.2);">
+                        <div style="margin-top: 2px;">
+                            <input type="radio" id="image-analysis" name="analysis-type" value="image" style="accent-color: #64ffda;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="image-analysis" style="display: block; margin-bottom: 10px; font-size: 14px; color: #e6f1ff; font-weight: 500;">竞品图片上传（可上传多张）</label>
+                            <div style="width: 100%; padding-top: 40%; position: relative; margin-bottom: 8px;">
+                                <label for="competitor-images" style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 2px dashed #64ffda; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; cursor: pointer; padding: 0 15px; box-sizing: border-box;">
+                                    <div style="font-size: 24px; color: #64ffda;">+</div>
+                                    <p style="margin: 0; color: #e6f1ff; font-size: 13px; font-weight: 500; word-wrap: break-word; max-width: 100%; line-height: 1.3;">点击或拖拽上传竞品图片</p>
+                                    <p style="margin: 0; color: #64ffda; font-size: 11px; word-wrap: break-word; max-width: 100%; line-height: 1.3; text-align: center;">支持JPG、PNG、Web格式</p>
+                                    <input type="file" id="competitor-images" multiple accept="image/*" onchange="handleCompetitorImageUpload(event)" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                                </label>
+                            </div>
+                            <div id="competitor-image-previews" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px;"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 配置完成和查看提示词按钮 -->
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button id="config-complete-btn" style="flex: 1; padding: 15px; background: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 8px; color: #64ffda; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; text-align: center;">配置完成</button>
+                <button id="confirm-quantity-btn" onclick="confirmQuantity()" style="flex: 1; padding: 15px; background: rgba(100, 255, 218, 0.1); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 8px; color: #64ffda; font-weight: 600; font-size: 16px; cursor: pointer; transition: all 0.3s ease; text-align: center;">查看提示词</button>
+            </div>
+
+            <!-- 生成按钮 -->
+            <button class="generate-btn" id="generate-btn">一键生成专业详情页</button>
+        </div>
+
+        <!-- 中间预览区域 -->
+        <div class="preview-panel">
+            <div class="preview-container" id="preview-container">
+                <!-- 科技感动画 -->
+                <div id="tech-animation" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+                <!-- 初始状态提示 -->
+                <div id="initial-state" style="position: relative; z-index: 1; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #64ffda; text-align: center;">
+                    <p>点击左侧"一键生成专业详情页"按钮生成图片</p>
+                </div>
+            </div>
+            <!-- 预览控件 -->
+            <div id="preview-controls" style="margin-top: 15px; background: rgba(17, 25, 40, 0.8); padding: 15px; border-radius: 8px; border: 1px solid rgba(100, 255, 218, 0.2); display: none;">
+                <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                    <div id="device-buttons" style="display: flex; flex: 2; gap: 10px;">
+                        <button id="desktop-preview-btn" class="generate-btn" style="width: auto; flex: 1; background: linear-gradient(90deg, #64ffda, #4fd1c5); color: #0a192f; border: none;">电脑端预览</button>
+                        <button id="mobile-preview-btn" class="generate-btn" style="width: auto; flex: 1; background: rgba(100, 255, 218, 0.3); color: #64ffda; border: 1px solid #64ffda;">手机端预览</button>
+                    </div>
+                    <div id="long-image-buttons" style="display: flex; flex: 1; gap: 10px;">
+                        <button id="desktop-long-image-btn" class="generate-btn" style="width: auto; flex: 1; background: rgba(100, 255, 218, 0.3); color: #64ffda; border: 1px solid #64ffda; display: none;">电脑端长图</button>
+                        <button id="mobile-long-image-btn" class="generate-btn" style="width: auto; flex: 1; background: rgba(100, 255, 218, 0.3); color: #64ffda; border: 1px solid #64ffda; display: none;">手机端长图</button>
+                        <button id="long-image-preview-btn" class="generate-btn" style="width: auto; flex: 1; background: rgba(100, 255, 218, 0.3); color: #64ffda; border: 1px solid #64ffda;">长图预览</button>
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px; display: flex; gap: 10px; align-items: center;">
+                    <select id="preview-language" style="flex: 1; padding: 8px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(100, 255, 218, 0.3); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                        <option value="chinese">中文</option>
+                        <option value="english">英文</option>
+                        <option value="korean">韩语</option>
+                        <option value="japanese">日语</option>
+                        <option value="spanish">西班牙语</option>
+                        <option value="italian">意大利语</option>
+                    </select>
+                    <button onclick="switchLanguage()" style="padding: 8px 16px; background: linear-gradient(90deg, #64ffda, #4fd1c5); border: none; border-radius: 6px; color: #0a192f; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s ease; white-space: nowrap;">切换语言</button>
+                </div>
+                <div style="display: flex;">
+                    <button id="download-btn" class="generate-btn" style="width: 100%; background: linear-gradient(90deg, #64ffda, #4fd1c5); border: none; border-radius: 6px; color: #0a192f; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s ease; padding: 10px 16px;">下载图片</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧历史记录 -->
+        <div class="history-panel">
+            <h2 style="display: flex; justify-content: space-between; align-items: center; margin: 0 0 20px 0;">
+                <span><span class="icon icon-history"></span>历史记录</span>
+                <div style="display: flex; gap: 10px;">
+                    <button id="clear-history-btn" class="generate-btn" onclick="clearHistory()" style="width: auto; font-size: 12px; padding: 4px 12px; margin-top: -2px; background: rgba(255, 70, 70, 0.1); color: #ff4646; border: 1px solid rgba(255, 70, 70, 0.3);">清除历史</button>
+                    <button id="recycle-bin-btn" class="generate-btn" onclick="openRecycleBin()" style="width: auto; font-size: 12px; padding: 4px 12px; margin-top: -2px;">回收站</button>
+                </div>
+            </h2>
+
+            <div id="history-list" class="history-list">
+                <div class="empty-history">
+                    暂无历史记录
+                </div>
+            </div>
+        </div>
+        
+        <!-- 回收站弹窗 -->
+        <div id="recycle-bin-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;">
+            <div style="background: rgba(17, 25, 40, 0.95); border-radius: 12px; padding: 20px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto;">
+                <h3 style="color: #64ffda; margin-top: 0; display: flex; justify-content: space-between; align-items: center;">
+                    回收站
+                    <button id="close-recycle-bin-btn" style="background: none; border: none; color: #a8b2d1; font-size: 16px; cursor: pointer;">×</button>
+                </h3>
+                <div id="recycle-bin-list" style="margin-top: 20px;">
+                    <div class="empty-history">
+                        回收站为空
+                    </div>
+                </div>
+                <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button id="restore-all-btn" class="generate-btn" style="width: auto; font-size: 12px;">恢复全部</button>
+                    <button id="empty-recycle-bin-btn" class="generate-btn" style="width: auto; font-size: 12px; background: rgba(255, 70, 70, 0.1); color: #ff4646; border: 1px solid rgba(255, 70, 70, 0.3);">清空回收站</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 下载格式选择弹窗 -->
+        <div id="download-format-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;">
+            <div style="background: rgba(17, 25, 40, 0.95); border-radius: 12px; padding: 20px; width: 90%; max-width: 400px; max-height: 80vh; overflow-y: auto;">
+                <h3 style="color: #64ffda; margin-top: 0; display: flex; justify-content: space-between; align-items: center;">
+                    选择下载格式
+                    <button onclick="closeDownloadFormatModal()" style="background: none; border: none; color: #a8b2d1; font-size: 16px; cursor: pointer;">×</button>
+                </h3>
+                <div style="margin-top: 20px;">
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">选择格式</label>
+                        <select id="download-format" style="width: 100%; padding: 10px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="psd">PSD</option>
+                            <option value="pdf">PDF</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <label style="display: flex; align-items: center; gap: 5px; font-size: 14px; color: #a8b2d1;">
+                            <input type="checkbox" id="add-watermark" style="accent-color: #64ffda;" onchange="toggleWatermarkInput()">
+                            添加水印
+                        </label>
+                        <p style="margin-top: 5px; font-size: 12px; color: #64ffda;">添加满屏透明水印，不影响图片观看</p>
+                        <div id="watermark-input-container" style="margin-top: 10px; display: none;">
+                            <label style="display: block; margin-bottom: 5px; font-size: 14px; color: #a8b2d1;">水印内容</label>
+                            <input type="text" id="watermark-text" placeholder="请输入水印文字" style="width: 100%; padding: 10px; background: rgba(26, 32, 44, 0.8); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 6px; color: #e6f1ff; font-size: 14px;">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button onclick="confirmDownload()" class="generate-btn" style="width: 48%;">下载</button>
+                    <button onclick="closeDownloadFormatModal()" class="generate-btn" style="width: 48%; background: rgba(100, 255, 218, 0.1); color: #64ffda; border: 1px solid rgba(100, 255, 218, 0.3);">取消</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 提示词编辑弹窗 -->
+        <div id="prompt-modal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;">
+            <div style="background: rgba(17, 25, 40, 0.95); border-radius: 12px; padding: 20px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                <h3 style="color: #64ffda; margin-top: 0; display: flex; justify-content: space-between; align-items: center;">
+                    编辑提示词
+                    <button onclick="closePromptModal()" style="background: none; border: none; color: #a8b2d1; font-size: 16px; cursor: pointer;">×</button>
+                </h3>
+                <div id="prompt-list" style="margin-top: 20px;"></div>
+                <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                    <button onclick="confirmPrompts()" class="generate-btn" style="width: 48%;">确认</button>
+                    <button onclick="closePromptModal()" class="generate-btn" style="width: 48%; background: rgba(100, 255, 218, 0.1); color: #64ffda; border: 1px solid rgba(100, 255, 218, 0.3);">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
